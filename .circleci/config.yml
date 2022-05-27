@@ -312,19 +312,16 @@ jobs:
           when: on_fail
   smoke_test:
     docker:
-      - image: alpine:latest
+      - image: amazon/aws-cli
     steps:
+      - checkout
       - run: apk add --update curl
       - run:
           name: smoke test
           command: |
-            URL="https://blog.udacity.com/"
-            if curl -s --head ${URL} 
-            then
-              return 0
-            else
-              return 1
-            fi
+            return 1   # smoke test an error
+      - destroy_enviroment
+      - when: on_fail
 
       - run:
           name: Backend smoke test.
