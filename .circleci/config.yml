@@ -7,7 +7,7 @@ commands:
       workflow_id:
         type: string
       event:
-        type: string  
+        type: string
     steps:
       - run:
           name: Destroy environments << parameters.workflow_id>>
@@ -16,7 +16,7 @@ commands:
             echo "Destroy enviroment : << parameters.workflow_id>>"
             aws s3 rm s3://udapeople-<< parameters.workflow_id>> --recursive
             aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.workflow_id>>
-            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.workflow_id>> 
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.workflow_id>>
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
@@ -38,98 +38,97 @@ commands:
               npm run migrations:revert
             fi
           when: << parameters.when >>
-            
+
 jobs:
   build-frontend:
-    docker:
-      - image: circleci/node:13.8.0
+    executor: node
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-build]
+      - attach_workspace:
+          at: .
       - run:
-          name: Build front-end
-          command: |
-              cd frontend
-              npm install
-              npm run build
-      - save_cache:
-          paths: [frontend/node_modules]
-          key: frontend-build
+          name: npm run build
+          working_directory: ./frontend
+          command: npm run build
 
   build-backend:
-    docker:
-      - image: circleci/node:13.8.0
+    executor: node
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
+      - attach_workspace:
+          at: .
       - run:
-          name: Back-end build
-          command: |
-              cd backend
-              npm install
-              npm run build
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
+          name: npm run build
+          working_directory: ./backend
+          command: npm run build
+      - persist_to_workspace:
+          root: .
+          paths:
+            - backend/dist
 
   test-frontend:
-    docker:
-      - image: circleci/node:13.8.0
+    executor: node
     steps:
       - checkout
-      - restore_cache:
-        keys: [frontend-build]
-    -run:
-      name: Run frontend test
-      command: |
-        cd frontend
-        npm install
-        npm run test
-      
-                
-  test-backend:
-      docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-        keys: [backend-build]
-    -run:
-      name: Run backend test
-      command: |
-        cd backend
-        npm install
-        npm run test
-          
-  scan-frontend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout 
-      - restore_cache:
-        keys: [frontend-build]
+      - attach_workspace:
+          at: .
       - run:
-        name: scan frontend dependencies
-        command: |
-        cd frontend
-        npm install
-        npm audit --audit-level=critical
+          name: Install junit coverage reporter
+          working_directory: ./frontend
+          command: npm install --save-dev jest-junit
+      - run:
+          name: Run tests with JUnit as reporter
+          working_directory: ./frontend
+          command: npm test -- --ci --runInBand --reporters=default --reporters=jest-junit && pwd && ls -la /tmp
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./test_results
+      - store_test_results:
+          path: ./frontend/test_results
+      - store_artifacts:
+          path: ./frontend/test_results
+
+  test-backend:
+    executor: node
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install junit coverage reporter
+          working_directory: ./backend
+          command: npm install --save-dev jest-junit
+      - run:
+          name: Run tests with JUnit as reporter
+          working_directory: ./backend
+          command: npm test -- --ci --runInBand --reporters=default --reporters=jest-junit && pwd
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./test_results
+      - store_test_results:
+          path: ./backend/test_results
+      - store_artifacts:
+          path: ./backend/test_results
+
+  scan-frontend:
+    executor: node
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Check Frontend against security vulnerabilities
+          working_directory: ./frontend
+          command: npm audit --audit-level=critical
 
   scan-backend:
-    docker:
-      - image: circleci/node:13.8.0
+    executor: node
     steps:
-      - checkout 
-      - restore_cache:
-        keys: [backend-build]
+      - checkout
+      - attach_workspace:
+          at: .
       - run:
-        name: scan backend dependencies
-        command: |
-        cd backend
-        npm install
-        npm audit --audit-level=critical
+          name: Check Backend against security vulnerabilities
+          working_directory: ./backend
+          command: npm audit --audit-level=critical
 
   deploy-infrastructure:
     docker:
@@ -141,7 +140,7 @@ jobs:
     steps:
       - checkout
       - run: yum -y install tar gzip
-      - run: 
+      - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
@@ -149,7 +148,7 @@ jobs:
               --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
-            
+
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -170,15 +169,15 @@ jobs:
           paths:
             - project/.circleci/ansible/inventory.txt
       - destroy-enviroment:
-        workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}" 
-        event: on_fail     
+        workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+        event: on_fail
 
   configure-infrastructure:
     docker:
       image: python:3.7-alpine3.11
     steps:
       - checkout
-      - add_ssh_keys: 
+      - add_ssh_keys:
         fingerprints: ["db:87:87:83:bb:63:b7:65:7a:a9:a2:33:e6:f0:da:8e"]
       - attach_workspace:
         at: ~/
@@ -198,7 +197,7 @@ jobs:
             ansible-playbook -i inventory configure-server.yaml
       - destroy_environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
-          when: on_fail      
+          when: on_fail
 
   run-migrations:
     executor: node
@@ -225,11 +224,11 @@ jobs:
           command: |
             if grep -q "has been executed successfully" migration_status
             then
-         
+
             echo "WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}"
       - destroy_environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
-          when: on_fail    
+          when: on_fail
 
   deploy-frontend:
     executor: node
@@ -265,8 +264,8 @@ jobs:
           when: on_fail
       - revert_migrations:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
-          when: on_fail    
-                    
+          when: on_fail
+
   deploy-backend:
     executor: python
     steps:
@@ -294,7 +293,7 @@ jobs:
           when: on_fail
       - revert_migrations:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
-          when: on_fail  
+          when: on_fail
 
   smoke-test:
     executor: python
@@ -312,7 +311,7 @@ jobs:
           name: Backend smoke test.
           working_directory: ./backend
           command: |
-            
+
       - run:
           name: Frontend smoke test.
           working_directory: ./backend
@@ -324,7 +323,7 @@ jobs:
           when: on_fail
       - revert_migrations:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
-          when: on_fail 
+          when: on_fail
 
   cloudfront-update:
     executor: aws
@@ -343,7 +342,7 @@ jobs:
             WorkflowID=$(aws cloudformation \
               list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
               --no-paginate --output text)
-            
+
       - run:
           name: Update cloudfront distribution
           working_directory: ./.circleci/files
@@ -376,7 +375,7 @@ jobs:
             fi
           environment:
             TERM: xterm-256color
-            
+
 workflows:
   default:
     jobs:
