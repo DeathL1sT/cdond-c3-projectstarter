@@ -310,22 +310,22 @@ jobs:
       - revert_migrations:
           id: ${CIRCLE_WORKFLOW_ID:0:7}
           when: on_fail
-  smoke_test:
-    docker:
-      - image: amazon/aws-cli
-    steps:
-      - checkout
-      - run: apk add --update curl
-      - run:
-          name: smoke test
-          command: |
-            return 1   # smoke test an error
-      - destroy_enviroment
-      - when: on_fail
+      # smoke_test:
+      #   docker:
+      #     - image: amazon/aws-cli
+      #   steps:
+      #     - checkout
+      #     - run: apk add --update curl
+      #     - run:
+      #         name: smoke test
+      #         command: |
+      #           return 1   # smoke test an error
+      #     - destroy_enviroment
+      #     - when: on_fail
 
-      - run:
-          name: Backend smoke test.
-          working_directory: ./backend
+      #     - run:
+      #         name: Backend smoke test.
+      #         working_directory: ./backend
 
       - run:
           name: Frontend smoke test.
