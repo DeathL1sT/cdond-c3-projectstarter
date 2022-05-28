@@ -99,6 +99,9 @@ jobs:
           root: .
           paths:
             - backend/dist
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
 
   build-frontend:
     executor: node
@@ -110,6 +113,9 @@ jobs:
           name: npm run build
           working_directory: ./frontend
           command: npm run build
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
 
   test-frontend:
     executor: node
