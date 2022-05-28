@@ -158,7 +158,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ./frontend
+          at: ./build
       - run:
           name: Check Frontend against security vulnerabilities
           working_directory: ./frontend
@@ -169,7 +169,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ./backend
+          at: ./dist
       - run:
           name: Check Backend against security vulnerabilities
           working_directory: ./backend
