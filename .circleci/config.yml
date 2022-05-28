@@ -154,26 +154,30 @@ jobs:
           path: ./backend/test_results
 
   scan-frontend:
-    executor: node
+    docker:
+      - image: circleci/node:13.8.0
     steps:
       - checkout
-      - attach_workspace:
-          at: ./src/build
+      - restore_cache:
+          keys: [frontend-build]
       - run:
-          name: Check Frontend against security vulnerabilities
-          working_directory: ./frontend
-          command: npm audit --audit-level=critical
+          name: frontend scan
+          command: |
+            cd frontend
+            npm audit --audit-level=critical
 
   scan-backend:
-    executor: node
+    docker:
+      - image: circleci/node:13.8.0
     steps:
       - checkout
-      - attach_workspace:
-          at: ./src/dist
+      - restore_cache:
+          keys: [backend-build]
       - run:
-          name: Check Backend against security vulnerabilities
-          working_directory: ./backend
-          command: npm audit --audit-level=critical
+          name: backend scan
+          command: |
+            cd backend
+            npm audit --audit-level=critical
 
   deploy-infrastructure:
     executor: aws
