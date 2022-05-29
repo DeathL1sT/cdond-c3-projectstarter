@@ -137,7 +137,7 @@ jobs:
           name: front-end scan
           command: |
             cd frontend
-            npm audit fix --force --audit-level=crtical
+            npm audit fix --audit-level=critical --force
             npm audit --audit-level=crtical
       - notify_on_failure
 
@@ -152,8 +152,8 @@ jobs:
           name: Back-end scan
           command: |
             cd backend
-            npm audit fix --force --audit-level=crtical
-            npm audit fix --force --audit-level=crtical
+            npm audit fix --audit-level=critical --force
+            npm audit fix --audit-level=critical --force
             npm audit --audit-level=crtical
       - notify_on_failure
 
