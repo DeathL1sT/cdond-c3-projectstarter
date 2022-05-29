@@ -132,12 +132,12 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: [frontend-deps]
       - run:
           name: front-end scan
           command: |
             cd frontend
-            npm install
+            npm audit fix --force --audit-level=crtical
             npm audit --audit-level=crtical
       - notify_on_failure
 
@@ -147,12 +147,13 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-deps]
       - run:
           name: Back-end scan
           command: |
             cd backend
-            npm install
+            npm audit fix --force --audit-level=crtical
+            npm audit fix --force --audit-level=crtical
             npm audit --audit-level=crtical
       - notify_on_failure
 
