@@ -140,6 +140,7 @@ jobs:
             npm install
             npm audit fix --force --audit-level=crtical
             npm audit --audit-level=crtical
+            npm audit --audit-level=crtical
       - notify_on_failure
 
   scan-backend:
@@ -156,6 +157,7 @@ jobs:
             npm install
             npm audit fix --force --audit-level=crtical
             npm audit fix --force --audit-level=crtical
+            npm audit --audit-level=crtical
             npm audit --audit-level=crtical
       - notify_on_failure
 
