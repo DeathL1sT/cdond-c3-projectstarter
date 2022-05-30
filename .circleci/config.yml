@@ -19,10 +19,10 @@ commands:
       - run:
           name: install ansible v2
           command: |
-            sudo yum update  
-            sudo amazon-linux-extras list | grep ansible2 
-            sudo amazon-linux-extras enable ansible2 
-            sudo yum install -y ansible
+            sudo apt update  
+            sudo apt install software-properties-common 
+            sudo add-apt-repository --yes --update ppa:ansible/ansible
+            sudo apt install -y ansible
   notify_on_failure:
     steps:
       - slack/notify:
