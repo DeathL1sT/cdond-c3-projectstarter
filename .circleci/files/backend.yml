@@ -29,7 +29,7 @@ Resources:
       SecurityGroups:
         - Ref: InstanceSecurityGroup
       KeyName: udap3
-      ImageId: ami-0022f774911c1d690
+      ImageId: ami-06eecef118bbf9259
       Tags:
         - Key: Name
           Value: !Sub UdaPeople-backend-${ID}
