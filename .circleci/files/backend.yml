@@ -28,7 +28,7 @@ Resources:
       InstanceType: t2.micro
       SecurityGroups:
         - Ref: InstanceSecurityGroup
-      KeyName: udacit-p3
+      KeyName: udap3
       ImageId: ami-0ca285d4c2cda3300
       Tags:
         - Key: Name
