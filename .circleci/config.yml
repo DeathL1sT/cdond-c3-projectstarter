@@ -62,7 +62,7 @@ commands:
 jobs:
   build-frontend:
     docker:
-      - image: cimg/node:12
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -80,7 +80,7 @@ jobs:
 
   build-backend:
     docker:
-      - image: cimg/node:12
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -98,7 +98,7 @@ jobs:
 
   test-frontend:
     docker:
-      - image: cimg/node:12
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -113,7 +113,7 @@ jobs:
 
   test-backend:
     docker:
-      - image: cimg/node:12
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -128,7 +128,7 @@ jobs:
 
   scan-frontend:
     docker:
-      - image: cimg/node:12
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -138,13 +138,12 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm audit fix --audit-level=critical --force
             npm audit --audit-level=crtical
       - notify_on_failure
 
   scan-backend:
     docker:
-      - image: cimg/node:12
+      - image: cimg/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -153,8 +152,6 @@ jobs:
           name: Back-end scan
           command: |
             cd backend
-            npm audit fix --audit-level=critical --force
-            npm audit fix --audit-level=critical --force
             npm audit --audit-level=crtical
       - notify_on_failure
 
