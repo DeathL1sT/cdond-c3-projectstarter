@@ -137,6 +137,8 @@ jobs:
           name: front-end scan
           command: |
             cd frontend
+            npm install
+            npm install oauth-sign@^0.9.0
             npm audit fix --force --audit-level=crtical
             npm audit fix --audit-level=critical --force
             npm audit fix --force
@@ -154,10 +156,10 @@ jobs:
           name: Back-end scan
           command: |
             cd backend
-            npm audit fix --force --audit-level=crtical
-            npm audit fix --force --audit-level=crtical
+            npm install
             npm audit fix --audit-level=critical --force
-            npm audit fix --force
+            npm audit fix --force --audit-level=crtical
+            npm audit fix --force --audit-level=crtical
             npm audit --audit-level=crtical
       - notify_on_failure
 
