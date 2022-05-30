@@ -126,33 +126,37 @@ jobs:
             npm run test
       - notify_on_failure
 
-  scan-frontend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [frontend-build]
-      - run:
-          name: frontend scan
-          command: |
-            cd frontend
-            npm audit --audit-level=critical
-      - notify_on_failure
+  # scan-frontend:
+  #   docker:
+  #     - image: cimg/node:13.8.0
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: [frontend-build]
+  #     - run:
+  #         name: front-end scan
+  #         command: |
+  #           cd frontend
+  #           npm audit fix --audit-level=critical --force
+  #           npm audit fix --force
+  #           npm audit --audit-level=crtical
+  #     - notify_on_failure
 
-  scan-backend:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore_cache:
-          keys: [backend-build]
-      - run:
-          name: backend scan
-          command: |
-            cd backend
-            npm audit --audit-level=critical
-      - notify_on_failure
+  # scan-backend:
+  #   docker:
+  #     - image: cimg/node:13.8.0
+  #   steps:
+  #     - checkout
+  #     - restore_cache:
+  #         keys: [backend-build]
+  #     - run:
+  #         name: Back-end scan
+  #         command: |
+  #           cd backend
+  #           npm audit fix --audit-level=critical --force
+  #           npm audit fix --force
+  #           npm audit --audit-level=crtical
+  #     - notify_on_failure
 
   deploy-infrastructure:
     docker:
@@ -342,10 +346,10 @@ workflows:
           requires: [build-frontend]
       - test-backend:
           requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
+      # - scan-backend:
+      #     requires: [build-backend]
+      # - scan-frontend:
+      #     requires: [build-frontend]
       - notify_on_success:
           requires:
             - test-frontend
