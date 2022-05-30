@@ -1,7 +1,10 @@
 ---
 - name: Configure udapeople infrastructure
   hosts: all
-  user: ec2-user
+  remote_user: ec2-user
+  become: true
+  become_method: sudo
+  become_user: root
   gather_facts: false
   vars:
     - ansible_python_interpreter: /usr/bin/python3
