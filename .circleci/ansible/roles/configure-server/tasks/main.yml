@@ -1,9 +1,9 @@
 - name: "Add node.js from Node surce"
   become: true
   shell: |
-    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 
-- name: "install Node.js 13"
+- name: "install Node.js 16"
   become: true
   yum:
     name: ["Nodejs"]
