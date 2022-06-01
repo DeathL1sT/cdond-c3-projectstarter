@@ -5,8 +5,8 @@
 
 - name: "install Node.js 16"
   become: true
-  yum:
-    name: ["Nodejs"]
+  apt:
+    name: ["nodejs"]
     state: latest
     update_cache: yes
 
