@@ -3,6 +3,7 @@
   file:
     path: ~/backend-app
     state: directory
+
 - name: "unarchive backend files"
   unarchive:
     src: artifact.tar.gz
@@ -27,4 +28,4 @@
 - name: "configure pm2 start as service"
   become: true
   shell: |
-    env PATH=$PATH:/usr/local/bin pm2 startup systmd -u ubuntu --hp /home/ubuntu
+    .env PATH=$PATH:/usr/local/bin pm2 startup systmd -u ubuntu --hp /home/ubuntu
