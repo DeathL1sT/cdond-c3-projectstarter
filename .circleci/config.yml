@@ -300,7 +300,8 @@ jobs:
       - install_nodejs
       - add_ssh_keys:
           fingerprints: ["65:c5:83:b1:1e:23:d8:ba:ae:87:99:18:74:90:19:6c"]
-      - attach_workspace: at:~/
+      - attach_workspace:
+          at: ~/
       - restore_cache:
           keys: [backend-build]
       - run:
@@ -314,7 +315,6 @@ jobs:
           cd backend
           npm run build
           tar -czf artifact.tar.gz dist/* package*
-
           cd..
           cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
       - run:
@@ -323,11 +323,9 @@ jobs:
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
             export TYPEORM_MIGRATIONS=./migrations/*.ts
-
             cd .circleci/ansible
             cd inventory.txt
             ansible-playbook -i inventory.txt debloy-backend.yml
-
       - destroy-environment
       - revert-migrations
   #     # Here's where you will add some code to rollback on failure
