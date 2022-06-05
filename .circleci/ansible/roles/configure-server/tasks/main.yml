@@ -7,10 +7,11 @@
   become: true
   apt:
     name: ["nodejs"]
-    state: present
+    state: latest
     update_cache: yes
 
 - name: "install PM2 Globally"
   npm:
     name: pm2
     global: yes
+    production: yes
