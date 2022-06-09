@@ -151,7 +151,7 @@ jobs:
           command: |
             cd frontend
             npm install
-             npm audit fix --force --audit-level=crtical
+            npm audit fix --force --audit-level=crtical
             # npm audit fix --audit-level=critical --force
             # npm audit fix --force
             # npm audit --audit-level=crtical
@@ -346,7 +346,6 @@ jobs:
 
             export API_URL=http://${BACKEND_PUBLIC_IP}:3030
             echo $BACKEND_PUBLIC_IP
-            sleep 10000
             if curl -s $API_URL/api/status | grep "ok"
             then
               exit 0
